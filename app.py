@@ -14,6 +14,15 @@ load_dotenv()
 
 app = Flask(__name__, template_folder='.')
 
+# --- FORÇA A ATUALIZAÇÃO AO INICIAR O APP ---
+try:
+    print("🚀 Iniciando atualização forçada do ranking...")
+    # (aqui você pode chamar a função ou colocar o código direto)
+    atualizar_ranking_cripto()
+except Exception as e:
+    print(f"⚠️ Erro na inicialização do ranking: {e}")
+# --------------------------------------------
+
 genai.configure(api_key=os.getenv("MINHA_CHAVE_GEMINI"))
 
 @app.route('/img/<path:filename>')
@@ -51,7 +60,7 @@ def atualizar_ranking_cripto():
             
     except Exception as e:
         print(f"❌ Erro crítico ao atualizar ranking: {str(e)}")
-        
+
 def executar_tarefa_agendada():
     print("⏰ [Agendador] Iniciando ciclo de atualizações...")
     # 1. Atualizar Notícias
