@@ -73,5 +73,11 @@ def ranking():
     return render_template("ranking.html", moedas=moedas)
 
 if __name__ == "__main__":
-    atualizar_ranking_cripto() # Chamada segura aqui
+    print("DEBUG: Iniciando bloco de carga...")
+    try:
+        atualizar_ranking_cripto()
+        print("✅ Ranking atualizado na inicialização!")
+    except Exception as e:
+        print(f"⚠️ Erro crítico na inicialização: {e}")
+            
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
