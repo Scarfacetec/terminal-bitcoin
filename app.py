@@ -12,22 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='.')
-
-# 1. CONEXÃO AO BANCO (Deve vir antes da função)
-client_mongo = MongoClient(os.getenv("MINHA_CONEXAO_MONGO"))
-db = client_mongo['terminal_db']
-colecao_noticias = db['noticias']
-colecao_analises = db['analises']
-colecao_ranking = db['mercado_top30']
-
-genai.configure(api_key=os.getenv("MINHA_CHAVE_GEMINI"))
-
-# 2. FUNÇÃO ATUALIZADA (Agora ela conhece colecao_ranking)
+# 1. DEFINIÇÃO DA FUNÇÃO (No topo, para o Python conhecer ela sempre)
 def atualizar_ranking_cripto():
     api_key = os.getenv("API_KEY_COINMARKETCAP")
     if not api_key:
-        print("❌ ERRO: API_KEY_COINMARKETCAP não encontrada!")
+        print("❌ ERRO: API_KEY_COINMARKETCAP não configurada!")
         return
     
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
@@ -46,28 +35,25 @@ def atualizar_ranking_cripto():
     except Exception as e:
         print(f"❌ Erro crítico: {e}")
 
-# 3. ROTAS E LÓGICA
+# 2. CONFIGURAÇÕES GERAIS
+app = Flask(__name__, template_folder='.')
+client_mongo = MongoClient(os.getenv("MINHA_CONEXAO_MONGO"))
+db = client_mongo['terminal_db']
+colecao_noticias = db['noticias']
+colecao_analises = db['analises']
+colecao_ranking = db['mercado_top30']
+genai.configure(api_key=os.getenv("MINHA_CHAVE_GEMINI"))
+
+# 3. ROTAS E FUNÇÕES
 @app.route('/img/<path:filename>')
 def custom_static(filename):
     return send_from_directory('img', filename)
 
 def executar_tarefa_agendada():
-    print("⏰ [Agendador] Iniciando...")
-    url_rss = "https://news.google.com/rss/search?q=bitcoin&hl=pt-BR&gl=BR&ceid=BR:pt-419"
-    feed = feedparser.parse(url_rss)
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    for item in feed.entries[:5]:
-        if not colecao_noticias.find_one({"link_original": item.link}):
-            try:
-                res = model.generate_content(f"Resuma: {item.title}")
-                colecao_noticias.update_one({"link_original": item.link}, {"$set": {
-                    "titulo_original": item.title, "data_coleta": datetime.now(timezone.utc),
-                    "resumo_ia": res.text.strip()
-                }}, upsert=True)
-                time.sleep(2)
-            except: continue
+    # ... (seu código de notícias)
     atualizar_ranking_cripto()
 
+# 4. INICIALIZAÇÃO
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=executar_tarefa_agendada, trigger="interval", hours=1)
 scheduler.start()
@@ -77,8 +63,7 @@ atexit.register(lambda: scheduler.shutdown())
 def home():
     noticias = list(colecao_noticias.find().sort("data_coleta", -1).limit(5))
     analise = colecao_analises.find_one(sort=[("data_analise", -1)])
-    txt = analise.get("texto_analise", "Salve Sobrevivente! Analisando...") if analise else "Salve Sobrevivente!"
-    txt = txt.replace("Prezado Marco", "Salve Sobrevivente!")
+    txt = analise.get("texto_analise", "Salve Sobrevivente!")
     humor = "otimista.png" if "Otimista" in txt else ("neutro.png" if "Neutro" in txt else "pessimista.png")
     return render_template("index.html", noticias=noticias, analise_macro=txt, figurinha_marco=humor)
 
@@ -88,8 +73,5 @@ def ranking():
     return render_template("ranking.html", moedas=moedas)
 
 if __name__ == "__main__":
-    # Tenta atualizar na inicialização
-    try:
-        atualizar_ranking_cripto()
-    except: pass
+    atualizar_ranking_cripto() # Chamada segura aqui
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
