@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 import time
 from dotenv import load_dotenv
 
-# Carrega as variáveis do .env (local) ou do painel do Render (produção)
+# Carrega variáveis de ambiente (do .env local ou do painel do Render)
 load_dotenv()
 
 app = Flask(__name__, template_folder='.')
@@ -17,10 +17,12 @@ app = Flask(__name__, template_folder='.')
 # Configuração da Chave da IA
 genai.configure(api_key=os.getenv("MINHA_CHAVE_GEMINI"))
 
+# Rota para servir suas imagens da pasta 'img/'
 @app.route('/img/<path:filename>')
 def custom_static(filename):
     return send_from_directory('img', filename)
 
+# Conexão com MongoDB
 try:
     client_mongo = MongoClient(os.getenv("MINHA_CONEXAO_MONGO"))
     db = client_mongo['terminal_db']
@@ -48,8 +50,8 @@ def executar_tarefa_agendada():
         link = item.link
         titulos_do_dia.append(titulo)
         
-        noticia_existente = colecao_noticias.find_one({"link_original": link})
-        if noticia_existente: continue
+        # Evita duplicidade no banco
+        if colecao_noticias.find_one({"link_original": link}): continue
             
         try:
             comando = f"Resuma a notícia: {titulo}. Responda apenas com o resumo direto, sem introduções."
@@ -64,7 +66,7 @@ def executar_tarefa_agendada():
             time.sleep(2)
         except: continue
             
-    # Análise Macro
+    # Geração da Análise Macro
     try:
         bloco = "\n".join([f"- {t}" for t in titulos_do_dia])
         comando_macro = f"""
@@ -81,6 +83,7 @@ def executar_tarefa_agendada():
     except Exception as e:
         print(f"Erro na análise: {e}")
 
+# Agendamento para rodar de hora em hora
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=executar_tarefa_agendada, trigger="interval", hours=1)
 scheduler.start()
@@ -91,14 +94,15 @@ def home():
     noticias = list(colecao_noticias.find().sort("data_coleta", -1).limit(5))
     analise = colecao_analises.find_one(sort=[("data_analise", -1)])
     
-    txt = analise.get("texto_analise", "Salve Sobrevivente! Analisando mercado...") if analise else "Salve Sobrevivente!"
+    # Busca texto ou define padrão
+    txt = analise.get("texto_analise", "Salve Sobrevivente! Analisando o mercado...") if analise else "Salve Sobrevivente!"
     
+    # 🛡️ LIMPEZA E FORÇAGEM DO BORDÃO
+    txt = txt.replace("Prezado Marco", "Salve Sobrevivente!")
+    txt = txt.replace("Prezado Marco,", "Salve Sobrevivente!")
+    if not txt.startswith("Salve Sobrevivente!"):
+        txt = "Salve Sobrevivente! " + txt
+
     # Lógica de Imagem
     humor = "pessimista.png"
     if "Otimista" in txt: humor = "otimista.png"
-    elif "Neutro" in txt: humor = "neutro.png"
-
-    return render_template("index.html", noticias=noticias, analise_macro=txt, figurinha_marco=humor)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
