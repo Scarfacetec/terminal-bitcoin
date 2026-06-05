@@ -1,28 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Ranking Cripto | Terminal Bitcoin</title>
-    <style>
-        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #0f0; padding: 10px; text-align: left; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>RANKING CRIPTO | TERMINAL BITCOIN</title>
 </head>
-<body>
-    <h1>RANKING CRIPTO - TOP 30</h1>
-    <table>
-        <tr><th>Rank</th><th>Moeda</th><th>Preço (BRL)</th><th>Var (24h)</th></tr>
-        {% for moeda in moedas %}
-        <tr>
-            <td>{{ moeda.cmc_rank }}</td>
-            <td>{{ moeda.name }} ({{ moeda.symbol }})</td>
-            <td>R$ {{ "%.2f"|format(moeda.quote.BRL.price) }}</td>
-            <td style="color: {{ 'red' if moeda.quote.BRL.percent_change_24h < 0 else 'lime' }}">
-                {{ "%.2f"|format(moeda.quote.BRL.percent_change_24h) }}%
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br><a href="/">Voltar ao Terminal</a>
+<body class="bg-[#040711] text-slate-200 min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-200">
+
+    <header class="border-b-2 border-cyan-500/30 bg-[#040711]/80 backdrop-blur-md sticky top-0 z-50 p-5 shadow-[0_4px_20px_rgba(6,182,212,0.15)]">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                </div>
+                <div class="border-l-2 border-amber-500 pl-3">
+                    <div class="text-2xl font-black tracking-tighter text-white">
+                        TERMINAL BITCOIN <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 border border-amber-500/30 text-lg rounded animate-pulse">RANK //</span>
+                    </div>
+                    <div class="text-[9px] uppercase tracking-[0.25em] text-cyan-400/80 mt-0.5">
+                        Ranking Top 30 Cripto | by Marco Vieira
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex gap-6 font-mono text-xs uppercase tracking-widest mt-4 sm:mt-0">
+                <a href="/" class="text-cyan-400 hover:text-white transition hover:underline decoration-cyan-400 underline-offset-4">
+                    [ RADAR ]
+                </a>
+                <a href="/ranking" class="text-amber-500 hover:text-white transition hover:underline decoration-amber-500 underline-offset-4">
+                    [ RANKING CRIPTO ]
+                </a>
+            </nav>
+
+            <a href="https://www.youtube.com/channel/UC6qMsSC0eAJjd-YObjuwdMw/" target="_blank" class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider bg-slate-950 hover:bg-rose-600 hover:text-white text-rose-500 px-4 py-2 rounded-none border border-rose-600/40 transition duration-300 shadow-[0_0_10px_rgba(225,29,72,0.1)] group">
+                >_ TERMINAL PODCAST
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full p-6 flex-grow">
+        <h2 class="text-cyan-400 mb-8 font-bold uppercase tracking-widest border-b border-cyan-500/20 pb-2 text-xl">Top 30 Criptoativos (BRL)</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-700">
+                <thead>
+                    <tr class="bg-slate-900/50 text-cyan-400 text-xs uppercase tracking-widest">
+                        <th class="p-4 border-b border-slate-700">Rank</th>
+                        <th class="p-4 border-b border-slate-700">Moeda</th>
+                        <th class="p-4 border-b border-slate-700">Preço (BRL)</th>
+                        <th class="p-4 border-b border-slate-700">Var 24h</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    {% for moeda in moedas %}
+                    <tr class="border-b border-slate-800 hover:bg-slate-800/30 transition">
+                        <td class="p-4 font-mono text-amber-500">{{ moeda.cmc_rank }}</td>
+                        <td class="p-4 font-bold text-white">{{ moeda.name }} <span class="text-slate-500 text-xs">/ {{ moeda.symbol }}</span></td>
+                        <td class="p-4 font-mono">R$ {{ "{:,.2f}".format(moeda.quote.BRL.price) }}</td>
+                        <td class="p-4 font-mono {{ 'text-rose-500' if moeda.quote.BRL.percent_change_24h < 0 else 'text-emerald-400' }}">
+                            {{ "{:,.2f}".format(moeda.quote.BRL.percent_change_24h) }}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="text-center p-6 text-[10px] text-slate-600 uppercase tracking-widest">
+        SYSTEM READY // OPERATIONAL // 2026
+    </footer>
+
 </body>
 </html>
