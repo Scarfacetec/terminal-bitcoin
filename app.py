@@ -12,6 +12,29 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def atualizar_ranking_cripto():
+    api_key = os.getenv("API_KEY_COINMARKETCAP")
+    if not api_key:
+        print("❌ ERRO: A variável de ambiente API_KEY_COINMARKETCAP não foi encontrada!")
+        return
+
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+    headers = {'X-CMC_PRO_API_KEY': api_key}
+    params = {'start': '1', 'limit': '30', 'convert': 'BRL'}
+    
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        data = response.json()
+        
+        if response.status_code == 200:
+            lista = data['data']
+            colecao_ranking.delete_many({})
+            colecao_ranking.insert_many(lista)
+            print("✅ Ranking Top 30 atualizado com sucesso!")
+        else:
+            print(f"❌ Erro na API CoinMarketCap (Status {response.status_code}): {data}")
+
+
 app = Flask(__name__, template_folder='.')
 
 # --- FORÇA A ATUALIZAÇÃO AO INICIAR O APP ---
@@ -36,27 +59,6 @@ colecao_noticias = db['noticias']
 colecao_analises = db['analises']
 colecao_ranking = db['mercado_top30']
 
-def atualizar_ranking_cripto():
-    api_key = os.getenv("API_KEY_COINMARKETCAP")
-    if not api_key:
-        print("❌ ERRO: A variável de ambiente API_KEY_COINMARKETCAP não foi encontrada!")
-        return
-
-    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
-    headers = {'X-CMC_PRO_API_KEY': api_key}
-    params = {'start': '1', 'limit': '30', 'convert': 'BRL'}
-    
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        data = response.json()
-        
-        if response.status_code == 200:
-            lista = data['data']
-            colecao_ranking.delete_many({})
-            colecao_ranking.insert_many(lista)
-            print("✅ Ranking Top 30 atualizado com sucesso!")
-        else:
-            print(f"❌ Erro na API CoinMarketCap (Status {response.status_code}): {data}")
             
     except Exception as e:
         print(f"❌ Erro crítico ao atualizar ranking: {str(e)}")
