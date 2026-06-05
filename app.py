@@ -91,18 +91,27 @@ atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def home():
-    noticias = list(colecao_noticias.find().sort("data_coleta", -1).limit(5))
-    analise = colecao_analises.find_one(sort=[("data_analise", -1)])
-    
-    # Busca texto ou define padrão
-    txt = analise.get("texto_analise", "Salve Sobrevivente! Analisando o mercado...") if analise else "Salve Sobrevivente!"
-    
-    # 🛡️ LIMPEZA E FORÇAGEM DO BORDÃO
-    txt = txt.replace("Prezado Marco", "Salve Sobrevivente!")
-    txt = txt.replace("Prezado Marco,", "Salve Sobrevivente!")
-    if not txt.startswith("Salve Sobrevivente!"):
-        txt = "Salve Sobrevivente! " + txt
+    try:
+        # Busca dados do MongoDB
+        noticias = list(colecao_noticias.find().sort("data_coleta", -1).limit(5))
+        analise = colecao_analises.find_one(sort=[("data_analise", -1)])
+        
+        # Texto base
+        txt = analise.get("texto_analise", "Salve Sobrevivente! Analisando o mercado...") if analise else "Salve Sobrevivente!"
+        
+        # Limpeza
+        txt = txt.replace("Prezado Marco", "Salve Sobrevivente!").replace("Prezado Marco,", "Salve Sobrevivente!")
+        if not txt.startswith("Salve Sobrevivente!"):
+            txt = "Salve Sobrevivente! " + txt
 
-    # Lógica de Imagem
-    humor = "pessimista.png"
-    if "Otimista" in txt: humor = "otimista.png"
+        # Lógica de Imagem
+        humor = "pessimista.png"
+        if "Otimista" in txt: humor = "otimista.png"
+        elif "Neutro" in txt: humor = "neutro.png"
+
+        # Tenta renderizar
+        return render_template("index.html", noticias=noticias, analise_macro=txt, figurinha_marco=humor)
+    
+    except Exception as e:
+        # Se der erro aqui, o site pelo menos não dá erro 500
+        return f"Erro ao carregar o dashboard: {str(e)}", 500
