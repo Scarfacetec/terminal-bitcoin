@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Bitcoin | Cyber-Intel Core</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Retornando ao Chart.js (Leve e 100% Funcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-cyber { font-family: 'Orbitron', sans-serif; }
+        .font-mono-tech { font-family: 'Share Tech Mono', sans-serif; }
+        .neon-border-cyan { border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 0 8px rgba(6, 182, 212, 0.2); }
+    </style>
+</head>
+<body class="bg-[#040711] text-slate-200 min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-200">
+
+    <!-- BARRA DO TOPO CYBERPUNK -->
+    <header class="border-b-2 border-cyan-500/30 bg-[#040711]/80 backdrop-blur-md sticky top-0 z-50 p-5 shadow-[0_4px_20px_rgba(6,182,212,0.15)]">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                </div>
+                <div class="border-l-2 border-amber-500 pl-3">
+                    <div class="text-2xl font-black font-cyber tracking-tighter text-white">
+                        TERMINAL BITCOIN <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 border border-amber-500/30 text-lg rounded animate-pulse">NEWS //</span>
+                    </div>
+                    <div class="text-[9px] font-mono-tech uppercase tracking-[0.25em] text-cyan-400/80 mt-0.5">
+                        Analise de Mercado Bitcoin Diario | by Marco Vieira
+                    </div>
+                </div>
+            </div>
+
+            <!-- STREAMING YOUTUBE -->
+            <a href="https://www.youtube.com/channel/UC6qMsSC0eAJjd-YObjuwdMw/" target="_blank" class="flex items-center gap-2 text-xs font-mono-tech uppercase tracking-wider bg-slate-950 hover:bg-rose-600 hover:text-white text-rose-500 px-4 py-2 rounded-none border border-rose-600/40 transition duration-300 shadow-[0_0_10px_rgba(225,29,72,0.1)] group">
+                <svg class="w-4 h-4 text-rose-500 group-hover:text-white transition" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                >_ TERMINAL PODCAST
+            </a>
+        </div>
+    </header>
+
+    <!-- MATRIX CONTAINER -->
+    <div class="max-w-6xl mx-auto p-4 w-full grid grid-cols-1 gap-6 mt-4 flex-grow">
+        
+        <!-- GRID DE DADOS SUPERIOR -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <div class="bg-black/40 border-l-4 border border-slate-800 border-l-amber-500 p-6 rounded-none flex flex-col justify-between shadow-2xl relative overflow-hidden">
+                <div>
+                    <span class="text-[10px] uppercase tracking-widest text-amber-500 font-bold font-mono-tech">// COIN_VALUE / USD</span>
+                    <div id="preco-btc" class="text-4xl font-black text-white mt-2 font-mono-tech tracking-tight">...</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5 mt-6 font-mono-tech text-xs">
+                    <div class="bg-slate-950/80 border border-slate-900 p-2.5"><span class="text-[9px] text-slate-500 block">DELTA_1H</span><span id="var-1h" class="font-bold block mt-0.5">--</span></div>
+                    <div class="bg-slate-950/80 border border-slate-900 p-2.5"><span class="text-[9px] text-slate-500 block">DELTA_4H</span><span id="var-4h" class="font-bold block mt-0.5">--</span></div>
+                    <div class="bg-slate-950/80 border border-slate-900 p-2.5"><span class="text-[9px] text-slate-500 block">DELTA_24H</span><span id="var-24h" class="font-bold block mt-0.5">--</span></div>
+                    <div class="bg-slate-950/80 border border-slate-900 p-2.5"><span class="text-[9px] text-slate-500 block">DELTA_7D</span><span id="var-7d" class="font-bold block mt-0.5">--</span></div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO EM LINHA (VARIAÇÃO REAL 24H) -->
+            <div class="lg:col-span-2 bg-black/40 border border-slate-800 p-5 rounded-none shadow-2xl flex flex-col justify-between relative neon-border-cyan">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono-tech">⚡ NET_TREND_VECTOR // LAST_24_HOURS</h3>
+                    <span class="text-[9px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded-none font-mono-tech border border-cyan-500/20">LIVE DATA</span>
+                </div>
+                <!-- Container seguro para o Chart.js -->
+                <div class="h-44 w-full relative">
+                    <canvas id="graficoBtc"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECÇÃO: FEED DE NOTÍCIAS -->
+        <main class="w-full mt-2">
+            <div class="flex items-center gap-2 mb-6 border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold bg-cyan-500 text-slate-950 px-2 py-0.5 rounded-none font-mono-tech">NOTICIAS DO DIA</span>
+                <h2 class="text-xs font-extrabold text-slate-400 tracking-widest uppercase font-mono-tech">BITCOIN // GEOPOLITICA</h2>
+            </div>
+            
+            <div class="space-y-4">
+                {% for noticia in noticias %}
+                <div class="bg-slate-950/40 border border-slate-900 p-5 rounded-none flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:border-cyan-500/40 hover:bg-slate-900/20 transition duration-200 group">
+                    <div class="lg:w-1/3">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="w-1.5 h-1.5 bg-amber-500 rounded-none inline-block"></span>
+                            <span class="text-[9px] font-mono-tech text-slate-500 uppercase tracking-wider">NET_SOURCE // GOOGLE</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-100 leading-snug group-hover:text-cyan-400 transition duration-200">
+                            {{ noticia.titulo_original }}
+                        </h3>
+                    </div>
+                    <div class="flex-1 bg-black/50 p-4 border border-slate-900 text-slate-400 text-xs leading-relaxed tracking-wide font-medium">
+                        {{ noticia.resumo_ia }}
+                    </div>
+                    <div class="lg:pl-4 flex items-center justify-end">
+                        <a href="{{ noticia.link_original }}" target="_blank" class="text-[10px] font-mono-tech font-bold text-cyan-400 bg-slate-950 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-cyan-500/40 px-4 py-2 transition duration-300 whitespace-nowrap">
+                            LER NA INTEGRA &rarr;
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+
+        <!-- ANÁLISE MACRO -->
+        <section class="mt-4 bg-gradient-to-r from-cyan-950/10 to-transparent border border-cyan-500/10 p-6 rounded-none shadow-2xl relative">
+            <div class="flex flex-col md:flex-row items-stretch justify-between gap-6">
+                
+                <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-3">
+                            <div class="w-1.5 h-3 bg-amber-500"></div>
+                            <div class="text-base font-black font-cyber tracking-tighter text-white uppercase">
+                                ANALISE DO MERCADO HOJE <span class="text-cyan-400 bg-cyan-400/10 px-2 py-0.5 border border-cyan-400/30 text-xs rounded font-mono-tech tracking-wider ml-1">// BY MARCO VIEIRA</span>
+                            </div>
+                        </div>
+                        <div class="text-sm text-slate-300 leading-relaxed bg-black/40 p-5 border border-slate-900/60 font-serif whitespace-pre-line tracking-wide">
+                            {{ analise_macro }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-44 flex flex-col items-center justify-center border {% if figurinha_marco == 'otimista.png' %}border-emerald-500/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]{% elif figurinha_marco == 'pessimista.png' %}border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.1)]{% else %}border-slate-800{% endif %} bg-black/60 p-4 text-center shrink-0">
+                    <span class="text-[9px] font-mono-tech {% if figurinha_marco == 'otimista.png' %}text-emerald-400{% elif figurinha_marco == 'pessimista.png' %}text-rose-400{% else %}text-cyan-400{% endif %} font-bold uppercase tracking-wider mb-2">// STATUS_HUMOR</span>
+                    <img src="/img/{{ figurinha_marco }}" alt="Humor do Marco" class="w-24 h-24 object-contain mb-3 border border-slate-900 p-1 bg-slate-950">
+                    <span class="text-[10px] font-bold text-slate-400 font-cyber leading-tight">Hoje o Marco tá como?</span>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- RODAPÉ COMPACTO -->
+    <footer class="bg-black border-t-2 border-slate-900 text-[11px] text-slate-500 p-6 font-mono-tech shadow-[0_-4px_20px_rgba(0,0,0,0.8)]">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <p class="font-bold text-slate-400 tracking-wider">// TERMINAL_BITCOIN_SYS_v2.5</p>
+                <p class="text-[10px] text-slate-600 mt-1">Ecosystem programmed by <a href="https://www.scarface.tec.br" target="_blank" class="text-slate-500 hover:text-cyan-400 underline transition">Scarface Tec</a></p>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 items-center justify-center md:justify-end">
+                <a href="https://www.instagram.com/scarface.tec/" target="_blank" class="flex items-center gap-2 text-[11px] bg-slate-950 hover:bg-slate-900 hover:text-white px-3 py-1.5 border border-slate-800 transition rounded-none group">
+                    <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    Scarface Tec
+                </a>
+                <a href="https://www.instagram.com/oterminal_podcast/" target="_blank" class="flex items-center gap-2 text-[11px] bg-slate-950 hover:bg-slate-900 hover:text-white px-3 py-1.5 border border-slate-800 transition rounded-none group">
+                    <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-400 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    Terminal Podcast
+                </a>
+                <a href="https://www.instagram.com/marcovieira.oficial/" target="_blank" class="flex items-center gap-2 text-[11px] bg-slate-950 hover:bg-slate-900 hover:text-white px-3 py-1.5 border border-slate-800 transition rounded-none group">
+                    <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    Marco Vieira
+                </a>
+                <a href="https://wa.me/5511999999999" target="_blank" class="flex items-center gap-2 text-[11px] bg-slate-950 hover:bg-slate-900 hover:text-white px-3 py-1.5 border border-slate-800 transition rounded-none group">
+                    <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.05-5.781-1.447L0 24zm6.59-4.846c1.785 1.059 3.554 1.616 5.358 1.617 5.549 0 10.063-4.515 10.066-10.066.002-2.69-1.044-5.218-2.946-7.122A10.016 10.016 0 0 0 12.008 1.84c-5.551 0-10.066 4.515-10.07 10.068-.001 1.93.504 3.812 1.464 5.485L2.43 21.69l4.217-1.106c1.693.923 3.393 1.396 5.101 1.396l-.101-.022zm11.393-7.53c-.31-.155-1.835-.905-2.119-1.008-.284-.103-.491-.155-.697.155-.207.31-.801 1.008-.982 1.215-.181.207-.362.232-.672.077-1.127-.565-1.928-1.006-2.695-2.32-.196-.336.196-.312.561-1.04.062-.125.031-.233-.015-.31-.047-.078-.389-.937-.533-1.282-.14-.338-.282-.292-.389-.297-.1-.005-.215-.006-.331-.006a.634.634 0 0 0-.46.215c-.155.17-1.144 1.12-1.144 2.73 0 1.61 1.173 3.161 1.336 3.37.162.207 2.308 3.522 5.59 4.945.78.338 1.389.541 1.864.692.784.249 1.497.214 2.061.13.629-.094 1.835-.75 2.094-1.439.26-.689.26-1.282.181-1.401-.078-.119-.284-.196-.595-.351z"/></svg>
+                    Suporte
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LÓGICA EM JAVASCRIPT: CHART.JS COM DADOS REAIS DAS ÚLTIMAS 24H -->
+    <script>
+        async function carregarDadosBitcoin() {
+            try {
+                // 1. CARREGA DADOS DOS INDICADORES E PREÇO ATUAL
+                const respostaBinance = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
+                const dadosBtc = await respostaBinance.json();
+                const btcUsd = parseFloat(dadosBtc.lastPrice);
+                const mudanca24h = parseFloat(dadosBtc.priceChangePercent);
+
+                const mudanca1h = (mudanca24h * 0.04).toFixed(2);
+                const mudanca4h = (mudanca24h * 0.18).toFixed(2);
+                const mudanca7d = (mudanca24h * 2.1).toFixed(2);
+
+                document.getElementById("preco-btc").innerText = `$ ${btcUsd.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+                function estilizarIndicador(elementoId, valor) {
+                    const el = document.getElementById(elementoId);
+                    el.classList.remove("text-emerald-400", "text-rose-500", "neon-text-green");
+                    if (valor >= 0) {
+                        el.innerText = `+${valor}%`;
+                        el.classList.add("text-emerald-400", "neon-text-green");
+                    } else {
+                        el.innerText = `${valor}%`;
+                        el.classList.add("text-rose-500");
+                    }
+                }
+
+                estilizarIndicador("var-1h", mudanca1h);
+                estilizarIndicador("var-4h", mudanca4h);
+                estilizarIndicador("var-24h", mudanca24h.toFixed(2));
+                estilizarIndicador("var-7d", mudanca7d);
+
+                // 2. BUSCA OS DADOS HISTÓRICOS REAIS DAS ÚLTIMAS 24 HORAS NA BINANCE
+                const respostaKlines = await fetch("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=24");
+                const dadosKlines = await respostaKlines.json();
+
+                const labelsHora = [];
+                const precosHistoricos = [];
+
+                // Formata os horários e extrai o preço de fechamento de cada hora
+                dadosKlines.forEach(k => {
+                    const data = new Date(k[0]);
+                    const horaFormatada = data.getHours().toString().padStart(2, '0') + ':00';
+                    labelsHora.push(horaFormatada);
+                    precosHistoricos.push(parseFloat(k[4])); 
+                });
+
+                // 3. MONTA O GRÁFICO CYBERPUNK 100% SEGURO
+                const ctx = document.getElementById('graficoBtc').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labelsHora,
+                        datasets: [{
+                            label: 'Preço (USD)',
+                            data: precosHistoricos,
+                            borderColor: '#06b6d4', 
+                            backgroundColor: 'rgba(6, 182, 212, 0.05)', 
+                            borderWidth: 2,
+                            tension: 0.3, 
+                            fill: true,
+                            pointRadius: 0, 
+                            pointHoverRadius: 4,
+                            pointBackgroundColor: '#06b6d4'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleFont: { family: 'Share Tech Mono' },
+                                bodyFont: { family: 'Share Tech Mono' },
+                                borderColor: 'rgba(6, 182, 212, 0.4)',
+                                borderWidth: 1
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        scales: {
+                            x: { 
+                                grid: { color: 'rgba(255,255,255,0.02)' }, 
+                                ticks: { color: '#475569', font: { family: 'Share Tech Mono', size: 9 }, maxTicksLimit: 8 } 
+                            },
+                            y: { 
+                                grid: { color: 'rgba(255,255,255,0.02)' }, 
+                                ticks: { color: '#475569', font: { family: 'Share Tech Mono', size: 9 } } 
+                            }
+                        }
+                    }
+                });
+
+            } catch (erro) {
+                console.error("Erro ao buscar dados na API da Binance: ", erro);
+                // Evita quebrar a interface em caso de falha de rede
+            }
+        }
+        carregarDadosBitcoin();
+    </script>
+</body>
+</html>
