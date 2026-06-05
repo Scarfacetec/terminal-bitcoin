@@ -84,4 +84,11 @@ def ranking():
     return render_template("ranking.html", moedas=moedas)
 
 if __name__ == "__main__":
+    # Força uma atualização ao iniciar para não ficar vazio
+    try:
+        atualizar_ranking_cripto()
+        print("✅ Ranking inicializado com sucesso!")
+    except Exception as e:
+        print(f"⚠️ Erro ao inicializar ranking: {e}")
+
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
